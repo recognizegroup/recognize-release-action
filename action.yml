@@ -4,6 +4,14 @@ inputs:
   token:
     description: 'GitHub API token'
     required: true
+  report_type:
+    description: 'Type of report to generate. This can either be release (note that this only works for staging and production deployments), or commit.'
+    default: release
+    required: true
+  ticket_url:
+    description: 'When a ticket is found, it can automatically be linked to an external server. <ticket> will be interpolated with the ticket number.'
+    default: https://recognize.atlassian.net/browse/<ticket>
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'

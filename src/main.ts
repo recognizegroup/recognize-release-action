@@ -1,11 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {
-  Commit,
-  Deployment,
-  DeploymentEvent,
-  PushEvent
-} from '@octokit/webhooks-types'
+import {DeploymentEvent} from '@octokit/webhooks-types'
+import dayjs from 'dayjs'
 
 async function run(): Promise<void> {
   try {
@@ -36,7 +32,7 @@ async function run(): Promise<void> {
     )
 
     if (!previousDeployment) {
-      core.info(`No previous deployment found for ${environment}`)
+      core.warning(`No previous deployment found for ${environment}`)
       return
     }
 
@@ -61,9 +57,26 @@ async function run(): Promise<void> {
       previousDeployment.sha
     )
     const commitMessages = commitsBetween.map(it => it.commit.message)
-    core.info(`Commits in deployment: ${commitMessages.join(', ')}`)
 
-    core.info(JSON.stringify(latestDeployments))
+    const startedAt = dayjs(deployment.created_at).format(
+      'dddd MMMM YYYY HH:mm'
+    )
+    const previousUrl = deployment.url
+
+    const report = `
+| Environment    | Started at   | Previous deployment                 |
+| -------------- | ------------ | ----------------------------------- |
+| ${environment} | ${startedAt} | [#${deployment.id}](${previousUrl}) |
+
+## Commits
+${
+  commitMessages.length === 0
+    ? 'No commits found'
+    : commitMessages.map(it => `- ${it}`).join('\n')
+}
+`
+
+    core.info(report)
   } catch (error: any) {
     core.setFailed(error.message)
   }
