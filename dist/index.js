@@ -107,7 +107,7 @@ ${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
                     } }, github.context.repo));
             }
             else if (reportType === 'release') {
-                const isProduction = isProductionEnvironment(environment) || true;
+                const isProduction = isProductionEnvironment(environment) || true || true;
                 const isStaging = isStagingEnvironment(environment);
                 if (isProduction) {
                     // Find tag for commit sha, and create release
