@@ -19,3 +19,4 @@ jobs:
 ```
 
 ## Screenshot
+![Screenshot of the report](./assets/screenshot.png "Screenshot of the report")
