@@ -112,8 +112,7 @@ ${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
                 if (isProduction) {
                     // Find tag for commit sha, and create release
                     const commitSha = deployment.sha;
-                    const commit = yield octokit.rest.repos.getCommit(Object.assign(Object.assign({}, github.context.repo), { ref: commitSha }));
-                    core.info(JSON.stringify(commit));
+                    core.info(JSON.stringify(github.context));
                 }
                 // Create release
                 // const release = await octokit.rest.repos.createRelease({
