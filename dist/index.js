@@ -54,6 +54,23 @@ function run() {
                 repo: github.context.repo.repo,
                 environment
             });
+            // Deployments are sorted by creation date, so the latest one is the first one
+            const previousDeployment = latestDeployments.data.find(it => it.id !== deployment.id);
+            if (!previousDeployment) {
+                core.info(`No previous deployment found for ${environment}`);
+                return;
+            }
+            const compareShas = (currentSha, previousSha) => __awaiter(this, void 0, void 0, function* () {
+                return octokit.paginate(octokit.rest.repos.compareCommits, {
+                    owner: github.context.repo.owner,
+                    repo: github.context.repo.repo,
+                    base: previousSha,
+                    head: currentSha
+                }, response => response.data.commits);
+            });
+            const commitsBetween = yield compareShas(deployment.sha, previousDeployment.sha);
+            const commitMessages = commitsBetween.map(it => it.commit.message);
+            core.info(`Commits in deployment: ${commitMessages.join(', ')}`);
             core.info(JSON.stringify(latestDeployments));
         }
         catch (error) {
