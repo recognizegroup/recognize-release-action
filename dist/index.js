@@ -87,7 +87,7 @@ function run() {
                 if (!ticketUrl)
                     return text;
                 const tickets = listTicketsInMessages([text]);
-                return tickets.reduce((value, ticket) => value.replace(new RegExp(ticket, 'ig'), ticketUrl.replace('<ticket>', ticket)), text);
+                return tickets.reduce((value, ticket) => value.replace(new RegExp(ticket, 'ig'), `[${ticket}](${ticketUrl.replace('<ticket>', ticket)})`), text);
             };
             const report = addTicketLinksToText(`
 | Environment    | Started at   | Previous deployment                 |

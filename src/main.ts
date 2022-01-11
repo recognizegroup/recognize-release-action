@@ -80,7 +80,7 @@ async function run(): Promise<void> {
         (value, ticket) =>
           value.replace(
             new RegExp(ticket, 'ig'),
-            ticketUrl.replace('<ticket>', ticket)
+            `[${ticket}](${ticketUrl.replace('<ticket>', ticket)})`
           ),
         text
       )
