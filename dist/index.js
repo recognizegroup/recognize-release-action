@@ -48,7 +48,13 @@ function run() {
             const deploymentEvent = github.context.payload;
             const deployment = deploymentEvent.deployment;
             const environment = deployment.environment;
-            core.info(`Deployment to ${environment}`);
+            core.info(`Deployment started to ${environment}`);
+            const latestDeployments = octokit.rest.repos.listDeployments({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                environment,
+            });
+            core.info(JSON.stringify(latestDeployments));
         }
         catch (error) {
             core.setFailed(error.message);
