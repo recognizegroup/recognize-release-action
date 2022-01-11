@@ -1,0 +1,28 @@
+name: 'Build & Test action'
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - develop
+      - 'release/*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm install
+      - run: |
+          npm run all
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          token: ${{ github.token }}

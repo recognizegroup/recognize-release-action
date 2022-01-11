@@ -1,0 +1,9 @@
+name: 'Recognize Release Action'
+description: 'For projects that follow a release strategy, this action can be used to add release information like JIRA tickets.'
+inputs:
+  token:
+    description: 'GitHub API token'
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

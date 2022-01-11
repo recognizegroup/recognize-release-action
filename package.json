@@ -1,0 +1,54 @@
+{
+  "name": "recognize-release-action",
+  "version": "1.0.0",
+  "description": "For projects following the Gitflow release strategy, this action can be used to add release information like JIRA tickets.",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "package": "ncc build --source-map",
+    "test": "jest",
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/recognizegroup/recognize-release-action.git"
+  },
+  "keywords": [
+    "actions",
+    "node",
+    "release",
+    "gitflow"
+  ],
+  "author": "Recognize B.V.",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "@actions/core": "^1.5.0",
+    "@actions/github": "^5.0.0",
+    "@octokit/webhooks-types": "^5.0.0",
+    "axios": "^0.21.4",
+    "pac-proxy-agent": "^5.0.0",
+    "proxy-from-env": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.9.6",
+    "@typescript-eslint/parser": "^4.31.2",
+    "@octokit/types": "^6.31.0",
+    "@octokit/webhooks": "^9.15.0",
+    "@vercel/ncc": "^0.31.1",
+    "eslint": "^7.32.0",
+    "eslint-plugin-github": "^4.3.0",
+    "eslint-plugin-jest": "^24.4.2",
+    "jest": "^27.2.1",
+    "js-yaml": "^4.1.0",
+    "prettier": "2.4.1",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.3"
+  },
+  "resolutions": {
+    "proxy-agent": "4.0.1"
+  }
+}
