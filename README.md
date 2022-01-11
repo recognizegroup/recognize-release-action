@@ -10,7 +10,7 @@ and will find the tickets that have been mentioned in the commit message. A chec
 on:
   deployment
 jobs:
-  security-report:
+  deployment-report:
     runs-on: ubuntu-latest
     steps:
       - uses: recognizegroup/recognize-release-action@v1
