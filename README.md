@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Recognize Release Action
 
 This action can be used to annotate commits with additional release information. When triggering the action on deployment
@@ -20,3 +21,4 @@ jobs:
 
 ## Screenshot
 ![Screenshot of the report](./assets/screenshot.png "Screenshot of the report")
+=======
