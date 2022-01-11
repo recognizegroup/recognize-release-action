@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Recognize Release Action
 
 This action can be used to annotate commits with additional release information. When triggering the action on deployment
