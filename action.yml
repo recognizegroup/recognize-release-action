@@ -4,7 +4,7 @@ inputs:
   token:
     description: 'GitHub API token'
     required: true
-  ticket_url:
+  ticket-url:
     description: 'When a ticket is found, it can automatically be linked to an external server. <ticket> will be interpolated with the ticket number.'
     required: false
 runs:

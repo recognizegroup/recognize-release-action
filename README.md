@@ -15,7 +15,7 @@ jobs:
       - uses: recognizegroup/recognize-release-action@v1
         with:
           token: ${{ github.token }} # Token for the GitHub API
-          ticket_url: https://instance.atlassian.net/browse/<ticket> # Optional ticket URL, used to convert tickets to links
+          ticket-url: https://instance.atlassian.net/browse/<ticket> # Optional ticket URL, used to convert tickets to links
 ```
 
 ## Screenshot

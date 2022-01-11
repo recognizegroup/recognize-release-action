@@ -6,7 +6,7 @@ import {generateDeploymentReport} from './generate'
 async function run(): Promise<void> {
   try {
     const token = core.getInput('token', {required: true})
-    const ticketUrl = core.getInput('ticket_url', {required: false})
+    const ticketUrl = core.getInput('ticket-url', {required: false})
     const octokit = github.getOctokit(token)
 
     if (github.context.eventName !== 'deployment') {

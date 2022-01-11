@@ -11,3 +11,4 @@ jobs:
       - uses: ./
         with:
           token: ${{ github.token }}
+          ticket-url: https://test.atlassian.net/browse/<ticket>
