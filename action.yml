@@ -1,0 +1,12 @@
+name: 'Recognize Release Action'
+description: 'This action can annotate deployments to environments with changed commits and (JIRA) tickets.'
+inputs:
+  token:
+    description: 'GitHub API token'
+    required: true
+  ticket-url:
+    description: 'When a ticket is found, it can automatically be linked to an external server. <ticket> will be interpolated with the ticket number.'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
