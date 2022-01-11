@@ -186,7 +186,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = core.getInput('token', { required: true });
-            const ticketUrl = core.getInput('ticket_url', { required: true });
+            const ticketUrl = core.getInput('ticket_url', { required: false });
             const octokit = github.getOctokit(token);
             if (github.context.eventName !== 'deployment') {
                 core.warning(`Skipping action, because it can only be used for deployment triggers at this moment.`);
