@@ -45,8 +45,7 @@ async function run(): Promise<void> {
       return octokit.paginate(
         octokit.rest.repos.compareCommits,
         {
-          owner: github.context.repo.owner,
-          repo: github.context.repo.repo,
+          ...github.context.repo,
           base: previousSha,
           head: currentSha
         },
@@ -88,9 +87,9 @@ async function run(): Promise<void> {
 
     const report = addTicketLinksToText(
       `
-| Environment    | Started at   | Previous deployment                 |
-| -------------- | ------------ | ----------------------------------- |
-| ${environment} | ${startedAt} | [#${deployment.id}](${previousUrl}) |
+| Environment    | Started at   | Previous deployment |
+| -------------- | ------------ | ------------------- |
+| ${environment} | ${startedAt} | #${deployment.id}   |
 
 ## Commits
 ${
@@ -104,6 +103,25 @@ ${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
 `,
       ticketUrl
     )
+
+    if (reportType === 'commit') {
+      // Add annotation
+      const name = `Deployment report to ${environment}`
+
+      await octokit.rest.checks.create({
+        head_sha: github.context.sha,
+        name,
+        status: 'completed',
+        conclusion: 'neutral',
+        output: {
+          title: name,
+          summary: report
+        },
+        ...github.context.repo
+      })
+    } else {
+      throw new Error('Unsupported report type')
+    }
 
     core.info(report)
   } catch (error: any) {

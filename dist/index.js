@@ -67,12 +67,7 @@ function run() {
                 return;
             }
             const compareShas = (currentSha, previousSha) => __awaiter(this, void 0, void 0, function* () {
-                return octokit.paginate(octokit.rest.repos.compareCommits, {
-                    owner: github.context.repo.owner,
-                    repo: github.context.repo.repo,
-                    base: previousSha,
-                    head: currentSha
-                }, response => response.data.commits);
+                return octokit.paginate(octokit.rest.repos.compareCommits, Object.assign(Object.assign({}, github.context.repo), { base: previousSha, head: currentSha }), response => response.data.commits);
             });
             const commitsBetween = yield compareShas(deployment.sha, previousDeployment.sha);
             const commitMessages = commitsBetween.map(it => it.commit.message);
@@ -90,9 +85,9 @@ function run() {
                 return tickets.reduce((value, ticket) => value.replace(new RegExp(ticket, 'ig'), `[${ticket}](${ticketUrl.replace('<ticket>', ticket)})`), text);
             };
             const report = addTicketLinksToText(`
-| Environment    | Started at   | Previous deployment                 |
-| -------------- | ------------ | ----------------------------------- |
-| ${environment} | ${startedAt} | [#${deployment.id}](${previousUrl}) |
+| Environment    | Started at   | Previous deployment |
+| -------------- | ------------ | ------------------- |
+| ${environment} | ${startedAt} | #${deployment.id}   |
 
 ## Commits
 ${commitMessages.length === 0
@@ -102,6 +97,17 @@ ${commitMessages.length === 0
 ## Tickets
 ${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
 `, ticketUrl);
+            if (reportType === 'commit') {
+                // Add annotation
+                const name = `Deployment report to ${environment}`;
+                yield octokit.rest.checks.create(Object.assign({ head_sha: github.context.sha, name, status: 'completed', conclusion: 'neutral', output: {
+                        title: name,
+                        summary: report
+                    } }, github.context.repo));
+            }
+            else {
+                throw new Error('Unsupported report type');
+            }
             core.info(report);
         }
         catch (error) {
