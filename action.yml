@@ -5,8 +5,8 @@ inputs:
     description: 'GitHub API token'
     required: true
   report_type:
-    description: 'Type of report to generate. This can either be release (note that this only works for staging and production deployments), or commit.'
-    default: commit
+    description: 'Type of report to generate. This can either be release (note that this only works for staging and production deployments using the GitFlow release strategy), or commit.'
+    default: release
     required: true
   ticket_url:
     description: 'When a ticket is found, it can automatically be linked to an external server. <ticket> will be interpolated with the ticket number.'

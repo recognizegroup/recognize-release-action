@@ -60,9 +60,8 @@ async function run(): Promise<void> {
     const commitMessages = commitsBetween.map(it => it.commit.message)
 
     const startedAt = dayjs(deployment.created_at).format(
-      'dddd MMMM YYYY HH:mm'
+      'dddd MMMM YYYY HH:mm Z'
     )
-    const previousUrl = deployment.url
 
     const listTicketsInMessages = (messages: string[]): string[] => {
       const regex = /((?<!([A-Z]{1,10})-?)[A-Z]+-\d+)/g
@@ -84,6 +83,15 @@ async function run(): Promise<void> {
         text
       )
     }
+
+    const isStagingEnvironment = (environment: string): boolean =>
+      ['staging', 'acc', 'acceptance', 'accept', 'acceptatie'].includes(
+        environment.toLowerCase()
+      )
+    const isProductionEnvironment = (environment: string): boolean =>
+      ['production', 'prd', 'prod', 'productie'].includes(
+        environment.toLowerCase()
+      )
 
     const report = addTicketLinksToText(
       `
@@ -119,6 +127,28 @@ ${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
         },
         ...github.context.repo
       })
+    } else if (reportType === 'release') {
+      const isProduction = isProductionEnvironment(environment) || true
+      const isStaging = isStagingEnvironment(environment)
+
+      if (isProduction) {
+        // Find tag for commit sha, and create release
+        const commitSha = deployment.sha
+        const commit = await octokit.rest.repos.getCommit({
+          ...github.context.repo,
+          ref: commitSha
+        })
+
+        core.info(JSON.stringify(commit))
+      }
+
+      // Create release
+      // const release = await octokit.rest.repos.createRelease({
+      //   tag_name: `${environment}-${deployment.id}`,
+      //   name: `Deployment report to ${environment}`,
+      //   body: report,
+      //   ...github.context.repo
+      // })
     } else {
       throw new Error('Unsupported report type')
     }

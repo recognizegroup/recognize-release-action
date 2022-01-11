@@ -71,8 +71,7 @@ function run() {
             });
             const commitsBetween = yield compareShas(deployment.sha, previousDeployment.sha);
             const commitMessages = commitsBetween.map(it => it.commit.message);
-            const startedAt = (0, dayjs_1.default)(deployment.created_at).format('dddd MMMM YYYY HH:mm');
-            const previousUrl = deployment.url;
+            const startedAt = (0, dayjs_1.default)(deployment.created_at).format('dddd MMMM YYYY HH:mm Z');
             const listTicketsInMessages = (messages) => {
                 const regex = /((?<!([A-Z]{1,10})-?)[A-Z]+-\d+)/g;
                 return [...new Set(messages.flatMap(it => { var _a; return (_a = it.match(regex)) !== null && _a !== void 0 ? _a : []; }))];
@@ -84,6 +83,8 @@ function run() {
                 const tickets = listTicketsInMessages([text]);
                 return tickets.reduce((value, ticket) => value.replace(new RegExp(ticket, 'ig'), `[${ticket}](${ticketUrl.replace('<ticket>', ticket)})`), text);
             };
+            const isStagingEnvironment = (environment) => ['staging', 'acc', 'acceptance', 'accept', 'acceptatie'].includes(environment.toLowerCase());
+            const isProductionEnvironment = (environment) => ['production', 'prd', 'prod', 'productie'].includes(environment.toLowerCase());
             const report = addTicketLinksToText(`
 | Environment    | Started at   | Previous deployment |
 | -------------- | ------------ | ------------------- |
@@ -104,6 +105,23 @@ ${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
                         title: name,
                         summary: report
                     } }, github.context.repo));
+            }
+            else if (reportType === 'release') {
+                const isProduction = isProductionEnvironment(environment) || true;
+                const isStaging = isStagingEnvironment(environment);
+                if (isProduction) {
+                    // Find tag for commit sha, and create release
+                    const commitSha = deployment.sha;
+                    const commit = yield octokit.rest.repos.getCommit(Object.assign(Object.assign({}, github.context.repo), { ref: commitSha }));
+                    core.info(JSON.stringify(commit));
+                }
+                // Create release
+                // const release = await octokit.rest.repos.createRelease({
+                //   tag_name: `${environment}-${deployment.id}`,
+                //   name: `Deployment report to ${environment}`,
+                //   body: report,
+                //   ...github.context.repo
+                // })
             }
             else {
                 throw new Error('Unsupported report type');
