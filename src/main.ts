@@ -63,6 +63,13 @@ async function run(): Promise<void> {
     )
     const previousUrl = deployment.url
 
+    const listTicketsInCommitMessages = (messages: string[]): string[] => {
+      const regex = /((?<!([A-Z]{1,10})-?)[A-Z]+-\d+)/g
+
+      return [...new Set(messages.flatMap(it => it.match(regex) ?? []))]
+    }
+    const tickets = listTicketsInCommitMessages(commitMessages)
+
     const report = `
 | Environment    | Started at   | Previous deployment                 |
 | -------------- | ------------ | ----------------------------------- |
@@ -71,9 +78,12 @@ async function run(): Promise<void> {
 ## Commits
 ${
   commitMessages.length === 0
-    ? 'No commits found'
+    ? 'No commits found.'
     : commitMessages.map(it => `- ${it}`).join('\n')
 }
+
+## Tickets
+${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
 `
 
     core.info(report)

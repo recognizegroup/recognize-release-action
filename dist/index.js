@@ -76,6 +76,11 @@ function run() {
             const commitMessages = commitsBetween.map(it => it.commit.message);
             const startedAt = (0, dayjs_1.default)(deployment.created_at).format('dddd MMMM YYYY HH:mm');
             const previousUrl = deployment.url;
+            const listTicketsInCommitMessages = (messages) => {
+                const regex = /((?<!([A-Z]{1,10})-?)[A-Z]+-\d+)/g;
+                return [...new Set(messages.flatMap(it => { var _a; return (_a = it.match(regex)) !== null && _a !== void 0 ? _a : []; }))];
+            };
+            const tickets = listTicketsInCommitMessages(commitMessages);
             const report = `
 | Environment    | Started at   | Previous deployment                 |
 | -------------- | ------------ | ----------------------------------- |
@@ -83,8 +88,11 @@ function run() {
 
 ## Commits
 ${commitMessages.length === 0
-                ? 'No commits found'
+                ? 'No commits found.'
                 : commitMessages.map(it => `- ${it}`).join('\n')}
+
+## Tickets
+${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
 `;
             core.info(report);
         }
