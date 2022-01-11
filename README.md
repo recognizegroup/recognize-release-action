@@ -1,7 +1,8 @@
 # Recognize Release Action
 
-This actions acts as a utility to draft releases based on deployments. It can create GitHub Releases
-based on the branch it was started from, and generate a report of the JIRA-tickets that are affected by the release.
+This action can be used to annotate commits with additional release information. When triggering the action on deployment
+to an environment, this action will automatically detect the changes between the current and previous deployment
+and will find the tickets that have been mentioned in the commit message. A check will be added to the commit.
 
 ## Example
 ```yaml
@@ -14,6 +15,7 @@ jobs:
       - uses: recognizegroup/recognize-release-action@v1
         with:
           token: ${{ github.token }} # Token for the GitHub API
+          ticket_url: https://instance.atlassian.net/browse/<ticket> # Optional ticket URL, used to convert tickets to links
 ```
 
 ## Screenshot
