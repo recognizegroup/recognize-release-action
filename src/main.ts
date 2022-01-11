@@ -6,6 +6,8 @@ import dayjs from 'dayjs'
 async function run(): Promise<void> {
   try {
     const token = core.getInput('token', {required: true})
+    const reportType = core.getInput('report_type', {required: true})
+    const ticketUrl = core.getInput('ticket_url', {required: true})
     const octokit = github.getOctokit(token)
 
     if (github.context.eventName !== 'deployment') {
@@ -63,14 +65,29 @@ async function run(): Promise<void> {
     )
     const previousUrl = deployment.url
 
-    const listTicketsInCommitMessages = (messages: string[]): string[] => {
+    const listTicketsInMessages = (messages: string[]): string[] => {
       const regex = /((?<!([A-Z]{1,10})-?)[A-Z]+-\d+)/g
 
       return [...new Set(messages.flatMap(it => it.match(regex) ?? []))]
     }
-    const tickets = listTicketsInCommitMessages(commitMessages)
+    const tickets = listTicketsInMessages(commitMessages)
 
-    const report = `
+    const addTicketLinksToText = (text: string, ticketUrl: string): string => {
+      if (!ticketUrl) return text
+      const tickets = listTicketsInMessages([text])
+
+      return tickets.reduce(
+        (value, ticket) =>
+          value.replace(
+            new RegExp(ticket, 'ig'),
+            ticketUrl.replace('<ticket>', ticket)
+          ),
+        text
+      )
+    }
+
+    const report = addTicketLinksToText(
+      `
 | Environment    | Started at   | Previous deployment                 |
 | -------------- | ------------ | ----------------------------------- |
 | ${environment} | ${startedAt} | [#${deployment.id}](${previousUrl}) |
@@ -84,7 +101,9 @@ ${
 
 ## Tickets
 ${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
-`
+`,
+      ticketUrl
+    )
 
     core.info(report)
   } catch (error: any) {

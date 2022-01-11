@@ -45,6 +45,8 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = core.getInput('token', { required: true });
+            const reportType = core.getInput('report_type', { required: true });
+            const ticketUrl = core.getInput('ticket_url', { required: true });
             const octokit = github.getOctokit(token);
             if (github.context.eventName !== 'deployment') {
                 core.warning(`Skipping action, because it can only be used for deployment triggers at this moment.`);
@@ -76,12 +78,18 @@ function run() {
             const commitMessages = commitsBetween.map(it => it.commit.message);
             const startedAt = (0, dayjs_1.default)(deployment.created_at).format('dddd MMMM YYYY HH:mm');
             const previousUrl = deployment.url;
-            const listTicketsInCommitMessages = (messages) => {
+            const listTicketsInMessages = (messages) => {
                 const regex = /((?<!([A-Z]{1,10})-?)[A-Z]+-\d+)/g;
                 return [...new Set(messages.flatMap(it => { var _a; return (_a = it.match(regex)) !== null && _a !== void 0 ? _a : []; }))];
             };
-            const tickets = listTicketsInCommitMessages(commitMessages);
-            const report = `
+            const tickets = listTicketsInMessages(commitMessages);
+            const addTicketLinksToText = (text, ticketUrl) => {
+                if (!ticketUrl)
+                    return text;
+                const tickets = listTicketsInMessages([text]);
+                return tickets.reduce((value, ticket) => value.replace(new RegExp(ticket, 'ig'), ticketUrl.replace('<ticket>', ticket)), text);
+            };
+            const report = addTicketLinksToText(`
 | Environment    | Started at   | Previous deployment                 |
 | -------------- | ------------ | ----------------------------------- |
 | ${environment} | ${startedAt} | [#${deployment.id}](${previousUrl}) |
@@ -93,7 +101,7 @@ ${commitMessages.length === 0
 
 ## Tickets
 ${tickets.length === 0 ? 'No tickets found.' : tickets.join(', ')}
-`;
+`, ticketUrl);
             core.info(report);
         }
         catch (error) {
