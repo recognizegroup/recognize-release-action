@@ -49,10 +49,10 @@ function run() {
             const deployment = deploymentEvent.deployment;
             const environment = deployment.environment;
             core.info(`Deployment started to ${environment}`);
-            const latestDeployments = octokit.rest.repos.listDeployments({
+            const latestDeployments = yield octokit.rest.repos.listDeployments({
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
-                environment,
+                environment
             });
             core.info(JSON.stringify(latestDeployments));
         }

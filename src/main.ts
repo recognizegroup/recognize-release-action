@@ -19,7 +19,7 @@ async function run(): Promise<void> {
     const environment = deployment.environment
     core.info(`Deployment started to ${environment}`)
 
-    const latestDeployments = octokit.rest.repos.listDeployments({
+    const latestDeployments = await octokit.rest.repos.listDeployments({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       environment
