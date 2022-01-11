@@ -10,8 +10,7 @@
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map",
     "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
-    "preinstall": "npx npm-force-resolutions"
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
   "repository": {
     "type": "git",
@@ -26,9 +25,10 @@
   "author": "Recognize B.V.",
   "license": "LGPL-3.0",
   "dependencies": {
-    "@actions/core": "^1.5.0",
+    "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
-    "@octokit/webhooks-types": "^5.0.0",
+    "@octokit/rest": "^18.12.0",
+    "@octokit/webhooks-types": "^5.2.0",
     "axios": "^0.21.4",
     "pac-proxy-agent": "^5.0.0",
     "proxy-from-env": "^1.1.0"
@@ -36,8 +36,8 @@
   "devDependencies": {
     "@types/node": "^16.9.6",
     "@typescript-eslint/parser": "^4.31.2",
-    "@octokit/types": "^6.31.0",
-    "@octokit/webhooks": "^9.15.0",
+    "@octokit/types": "^6.34.0",
+    "@octokit/webhooks": "^9.22.0",
     "@vercel/ncc": "^0.31.1",
     "eslint": "^7.32.0",
     "eslint-plugin-github": "^4.3.0",
@@ -47,8 +47,5 @@
     "prettier": "2.4.1",
     "ts-jest": "^27.0.5",
     "typescript": "^4.4.3"
-  },
-  "resolutions": {
-    "proxy-agent": "4.0.1"
   }
 }

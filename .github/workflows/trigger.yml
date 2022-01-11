@@ -1,16 +1,13 @@
-name: 'Build & Test action'
+name: 'Trigger'
 on:
-  pull_request:
   push:
     branches:
-      - main
-      - develop
-      - 'release/*'
+      - feature/TD-210-initial-setup
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
+    environment: Test
     steps:
       - uses: actions/checkout@v2
       - run: |

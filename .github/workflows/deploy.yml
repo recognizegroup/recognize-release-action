@@ -1,11 +1,6 @@
-name: 'Build & Test action'
+name: 'Deploy'
 on:
-  pull_request:
-  push:
-    branches:
-      - main
-      - develop
-      - 'release/*'
+  deployment
 
 jobs:
   build:
@@ -17,3 +12,6 @@ jobs:
           npm install
       - run: |
           npm run all
+      - uses: ./
+        with:
+          token: ${{ github.token }}
