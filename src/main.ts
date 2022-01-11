@@ -8,15 +8,16 @@ async function run(): Promise<void> {
     const octokit = github.getOctokit(token)
 
     if (github.context.eventName !== 'deployment') {
-      core.warning(`Skipping action, because it can only be used for deployment triggers at this moment.`)
+      core.warning(
+        `Skipping action, because it can only be used for deployment triggers at this moment.`
+      )
     }
 
-    const deploymentEvent = github.context.payload as DeploymentEvent;
-    const deployment = deploymentEvent.deployment;
+    const deploymentEvent = github.context.payload as DeploymentEvent
+    const deployment = deploymentEvent.deployment
 
-    const environment = deployment.environment;
-    core.info('Deployment ');
-
+    const environment = deployment.environment
+    core.info(`Deployment to ${environment}`)
   } catch (error: any) {
     core.setFailed(error.message)
   }
