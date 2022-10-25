@@ -8,5 +8,5 @@ inputs:
     description: 'When a ticket is found, it can automatically be linked to an external server. <ticket> will be interpolated with the ticket number.'
     required: false
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
