@@ -3,6 +3,7 @@ import {Context} from '@actions/github/lib/context'
 import {Octokit} from '@octokit/rest'
 import {mocked} from 'jest-mock'
 import {compareCommits} from '../src/compare-commits'
+import {GitHub} from '@actions/github/lib/utils'
 
 jest.mock('@octokit/rest', () => {
   return {
@@ -18,7 +19,7 @@ jest.mock('@octokit/rest', () => {
 })
 
 const octokit = new Octokit()
-const mockedOctokit = mocked(octokit, true)
+const mockedOctokit = mocked(octokit)
 
 describe('compare commits', () => {
   it('should return a list commits between two shas', async () => {
@@ -39,7 +40,7 @@ describe('compare commits', () => {
     )
 
     const result = await compareCommits(
-      mockedOctokit,
+      mockedOctokit as unknown as InstanceType<typeof GitHub>,
       context,
       currentSha,
       previousSha

@@ -8,6 +8,7 @@ import {compareCommits} from '../src/compare-commits'
 import {generateDeploymentReport} from '../src/generate'
 import {Deployment} from '@octokit/webhooks-types'
 import {generateMarkdownReport} from '../src/markdown-reporter'
+import {GitHub} from '@actions/github/lib/utils'
 
 jest.mock('../src/deployments')
 jest.mock('../src/commit-annotator')
@@ -17,7 +18,7 @@ jest.mock('@actions/core')
 jest.mock('@octokit/rest')
 
 const octokit = new Octokit()
-const mockedOctokit = mocked(octokit, true)
+const mockedOctokit = mocked(octokit) as unknown as InstanceType<typeof GitHub>
 
 describe('generate', () => {
   it('should not continue if there is no previous deployment', async () => {
