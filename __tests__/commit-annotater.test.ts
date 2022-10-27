@@ -3,6 +3,7 @@ import {Context} from '@actions/github/lib/context'
 import {Octokit} from '@octokit/rest'
 import {mocked} from 'jest-mock'
 import {annotateCommit} from '../src/commit-annotator'
+import {GitHub} from '@actions/github/lib/utils'
 
 jest.mock('@octokit/rest', () => {
   return {
@@ -17,7 +18,7 @@ jest.mock('@octokit/rest', () => {
 })
 
 const octokit = new Octokit()
-const mockedOctokit = mocked(octokit, true)
+const mockedOctokit = mocked(octokit) as unknown as InstanceType<typeof GitHub>
 
 describe('commit annotators', () => {
   it('should upload a report as a check', async () => {
